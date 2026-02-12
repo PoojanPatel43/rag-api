@@ -2,10 +2,21 @@ from fastapi import FastAPI
 import chromadb
 import ollama
 
-app = FastAPI()
+app = FastAPI(
+    title="RAG API",
+    description="Retrieval-Augmented Generation API with ChromaDB and Ollama",
+    version="1.0.0"
+)
+
 chroma = chromadb.PersistentClient(path="./db")
 collection = chroma.get_or_create_collection("docs")
 ollama_client = ollama.Client(host="http://host.docker.internal:11434")
+
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for container orchestration."""
+    return {"status": "healthy"}
 
 
 @app.post("/query")
