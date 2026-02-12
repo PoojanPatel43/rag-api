@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import chromadb
 import ollama
 
@@ -21,13 +21,16 @@ def health_check():
 
 @app.post("/query")
 def query(q: str):
+    """Query the RAG system with a question."""
+    if not q or not q.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
     results = collection.query(query_texts=[q], n_results=1)
     context = results["documents"][0][0] if results["documents"] else ""
-    
+
     answer = ollama_client.generate(
-    model="tinyllama",
-    prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
-)
+        model="tinyllama",
+        prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
+    )
 
-
-    return {"answer": answer["response"]}
+    return {"answer": answer["response"], "context_used": bool(context)}
