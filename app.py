@@ -13,6 +13,16 @@ collection = chroma.get_or_create_collection("docs")
 ollama_client = ollama.Client(host="http://host.docker.internal:11434")
 
 
+@app.get("/")
+def root():
+    """Root endpoint with API information."""
+    return {
+        "name": "RAG API",
+        "version": "1.0.0",
+        "docs": "/docs"
+    }
+
+
 @app.get("/health")
 def health_check():
     """Health check endpoint for container orchestration."""
