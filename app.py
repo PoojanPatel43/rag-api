@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import chromadb
 import ollama
 
@@ -6,6 +7,14 @@ app = FastAPI(
     title="RAG API",
     description="Retrieval-Augmented Generation API with ChromaDB and Ollama",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 chroma = chromadb.PersistentClient(path="./db")
