@@ -29,6 +29,16 @@ def health_check():
     return {"status": "healthy"}
 
 
+@app.get("/stats")
+def get_stats():
+    """Get statistics about the document collection."""
+    count = collection.count()
+    return {
+        "collection_name": "docs",
+        "document_count": count
+    }
+
+
 @app.post("/query")
 def query(q: str, n_results: int = 1):
     """Query the RAG system with a question."""
