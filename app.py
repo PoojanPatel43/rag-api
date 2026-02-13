@@ -30,13 +30,16 @@ def health_check():
 
 
 @app.post("/query")
-def query(q: str):
+def query(q: str, n_results: int = 1):
     """Query the RAG system with a question."""
     if not q or not q.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
-    results = collection.query(query_texts=[q], n_results=1)
-    context = results["documents"][0][0] if results["documents"] else ""
+    if n_results < 1 or n_results > 10:
+        raise HTTPException(status_code=400, detail="n_results must be between 1 and 10")
+
+    results = collection.query(query_texts=[q], n_results=n_results)
+    context = "\n\n".join(results["documents"][0]) if results["documents"] else ""
 
     answer = ollama_client.generate(
         model="tinyllama",
