@@ -1,7 +1,11 @@
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import chromadb
 import ollama
+
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+MODEL_NAME = os.getenv("MODEL_NAME", "tinyllama")
 
 app = FastAPI(
     title="RAG API",
@@ -19,7 +23,7 @@ app.add_middleware(
 
 chroma = chromadb.PersistentClient(path="./db")
 collection = chroma.get_or_create_collection("docs")
-ollama_client = ollama.Client(host="http://host.docker.internal:11434")
+ollama_client = ollama.Client(host=OLLAMA_HOST)
 
 
 @app.get("/")
@@ -61,7 +65,7 @@ def query(q: str, n_results: int = 1):
     context = "\n\n".join(results["documents"][0]) if results["documents"] else ""
 
     answer = ollama_client.generate(
-        model="tinyllama",
+        model=MODEL_NAME,
         prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
     )
 
