@@ -52,6 +52,21 @@ def get_stats():
     }
 
 
+@app.post("/search")
+def search(q: str, n_results: int = 3):
+    """Search documents without LLM generation."""
+    if not q or not q.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+    if n_results < 1 or n_results > 10:
+        raise HTTPException(status_code=400, detail="n_results must be between 1 and 10")
+
+    results = collection.query(query_texts=[q], n_results=n_results)
+    documents = results["documents"][0] if results["documents"] else []
+
+    return {"query": q, "results": documents, "count": len(documents)}
+
+
 @app.post("/query")
 def query(q: str, n_results: int = 1):
     """Query the RAG system with a question."""
