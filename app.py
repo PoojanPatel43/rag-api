@@ -42,6 +42,12 @@ def health_check():
     return {"status": "healthy"}
 
 
+@app.get("/version")
+def get_version():
+    """Get API version information."""
+    return {"version": "1.0.0", "model": MODEL_NAME}
+
+
 @app.get("/stats")
 def get_stats():
     """Get statistics about the document collection."""
