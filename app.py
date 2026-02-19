@@ -67,6 +67,13 @@ def search(q: str, n_results: int = 3):
     return {"query": q, "results": documents, "count": len(documents)}
 
 
+@app.delete("/documents/{doc_id}")
+def delete_document(doc_id: str):
+    """Delete a document by ID."""
+    collection.delete(ids=[doc_id])
+    return {"message": f"Document {doc_id} deleted"}
+
+
 @app.post("/query")
 def query(q: str, n_results: int = 1):
     """Query the RAG system with a question."""
