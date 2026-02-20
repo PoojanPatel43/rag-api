@@ -58,6 +58,13 @@ def get_stats():
     }
 
 
+@app.get("/documents")
+def list_documents():
+    """List all document IDs in the collection."""
+    result = collection.get()
+    return {"ids": result["ids"], "count": len(result["ids"])}
+
+
 @app.post("/documents")
 def add_document(text: str, doc_id: str = None):
     """Add a new document to the collection."""
