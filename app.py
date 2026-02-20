@@ -58,6 +58,17 @@ def get_stats():
     }
 
 
+@app.post("/documents")
+def add_document(text: str, doc_id: str = None):
+    """Add a new document to the collection."""
+    if not text or not text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty")
+
+    generated_id = doc_id or f"doc_{collection.count() + 1}"
+    collection.add(documents=[text], ids=[generated_id])
+    return {"id": generated_id, "message": "Document added"}
+
+
 @app.post("/search")
 def search(q: str, n_results: int = 3):
     """Search documents without LLM generation."""
