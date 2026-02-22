@@ -65,6 +65,15 @@ def list_documents():
     return {"ids": result["ids"], "count": len(result["ids"])}
 
 
+@app.get("/documents/{doc_id}")
+def get_document(doc_id: str):
+    """Get a specific document by ID."""
+    result = collection.get(ids=[doc_id])
+    if not result["documents"]:
+        raise HTTPException(status_code=404, detail="Document not found")
+    return {"id": doc_id, "content": result["documents"][0]}
+
+
 @app.post("/documents")
 def add_document(text: str, doc_id: str = None):
     """Add a new document to the collection."""
