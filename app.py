@@ -85,6 +85,16 @@ def add_document(text: str, doc_id: str = None):
     return {"id": generated_id, "message": "Document added"}
 
 
+@app.put("/documents/{doc_id}")
+def update_document(doc_id: str, text: str):
+    """Update an existing document."""
+    if not text or not text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty")
+
+    collection.update(ids=[doc_id], documents=[text])
+    return {"id": doc_id, "message": "Document updated"}
+
+
 @app.post("/search")
 def search(q: str, n_results: int = 3):
     """Search documents without LLM generation."""
