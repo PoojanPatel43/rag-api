@@ -1,8 +1,12 @@
 import os
+import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import chromadb
 import ollama
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
 MODEL_NAME = os.getenv("MODEL_NAME", "tinyllama")
@@ -126,6 +130,7 @@ def query(q: str, n_results: int = 1):
     if n_results < 1 or n_results > 10:
         raise HTTPException(status_code=400, detail="n_results must be between 1 and 10")
 
+    logger.info("Query received: %s", q)
     results = collection.query(query_texts=[q], n_results=n_results)
     context = "\n\n".join(results["documents"][0]) if results["documents"] else ""
 
@@ -134,4 +139,5 @@ def query(q: str, n_results: int = 1):
         prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
     )
 
+    logger.info("Query answered with context=%s", bool(context))
     return {"answer": answer["response"], "context_used": bool(context)}
