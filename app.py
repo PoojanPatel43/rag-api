@@ -95,6 +95,10 @@ def update_document(doc_id: str, text: str):
     if not text or not text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty")
 
+    existing = collection.get(ids=[doc_id])
+    if not existing["documents"]:
+        raise HTTPException(status_code=404, detail="Document not found")
+
     collection.update(ids=[doc_id], documents=[text])
     return {"id": doc_id, "message": "Document updated"}
 
