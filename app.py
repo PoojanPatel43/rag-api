@@ -121,6 +121,10 @@ def search(q: str, n_results: int = 3):
 @app.delete("/documents/{doc_id}")
 def delete_document(doc_id: str):
     """Delete a document by ID."""
+    existing = collection.get(ids=[doc_id])
+    if not existing["documents"]:
+        raise HTTPException(status_code=404, detail="Document not found")
+
     collection.delete(ids=[doc_id])
     return {"message": f"Document {doc_id} deleted"}
 
