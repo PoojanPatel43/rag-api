@@ -113,9 +113,11 @@ def search(q: str, n_results: int = 3):
     if n_results < 1 or n_results > 10:
         raise HTTPException(status_code=400, detail="n_results must be between 1 and 10")
 
+    logger.info("Search query: '%s' (n_results=%d)", q, n_results)
     results = collection.query(query_texts=[q], n_results=n_results)
     documents = results["documents"][0] if results["documents"] else []
 
+    logger.info("Search returned %d results", len(documents))
     return {"query": q, "results": documents, "count": len(documents)}
 
 
