@@ -86,6 +86,7 @@ def add_document(text: str, doc_id: str = None):
 
     generated_id = doc_id or f"doc_{collection.count() + 1}"
     collection.add(documents=[text], ids=[generated_id])
+    logger.info("Document added: %s (%d chars)", generated_id, len(text))
     return {"id": generated_id, "message": "Document added"}
 
 
