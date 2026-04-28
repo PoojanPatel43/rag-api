@@ -101,6 +101,7 @@ def update_document(doc_id: str, text: str):
         raise HTTPException(status_code=404, detail="Document not found")
 
     collection.update(ids=[doc_id], documents=[text])
+    logger.info("Document updated: %s (%d chars)", doc_id, len(text))
     return {"id": doc_id, "message": "Document updated"}
 
 
@@ -129,6 +130,7 @@ def delete_document(doc_id: str):
         raise HTTPException(status_code=404, detail="Document not found")
 
     collection.delete(ids=[doc_id])
+    logger.info("Document deleted: %s", doc_id)
     return {"message": f"Document {doc_id} deleted"}
 
 
