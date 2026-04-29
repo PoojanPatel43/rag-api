@@ -43,7 +43,11 @@ def root():
 @app.get("/health")
 def health_check():
     """Health check endpoint for container orchestration."""
-    return {"status": "healthy"}
+    try:
+        doc_count = collection.count()
+        return {"status": "healthy", "documents": doc_count}
+    except Exception:
+        return {"status": "degraded"}
 
 
 @app.get("/version")
