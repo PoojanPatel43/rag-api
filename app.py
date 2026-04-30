@@ -53,7 +53,7 @@ def health_check():
 @app.get("/version")
 def get_version():
     """Get API version information."""
-    return {"version": "1.0.0", "model": MODEL_NAME}
+    return {"version": "1.0.0", "model": MODEL_NAME, "ollama_host": OLLAMA_HOST}
 
 
 @app.get("/stats")
