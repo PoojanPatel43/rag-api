@@ -62,7 +62,9 @@ def get_stats():
     count = collection.count()
     return {
         "collection_name": "docs",
-        "document_count": count
+        "document_count": count,
+        "model": MODEL_NAME,
+        "embedding_function": "default"
     }
 
 
